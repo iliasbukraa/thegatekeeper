@@ -24,4 +24,3 @@ for directory in list(nonmasked_pictures.iterdir()):
 dataframe_path = 'data/dataframe.pickle'
 print(f'saving dataframe to {dataframe_path}')
 mask_dataframe.to_pickle(dataframe_path)
-
