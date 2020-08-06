@@ -1,0 +1,5 @@
+opencv_python
+torchvision
+scikit-video
+pandas
+pytorch_lightning
