@@ -23,7 +23,7 @@ def tagVideo(modelpath):
     model = model.to(device)
     model.eval()
 
-    faceDetector = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+    faceDetector = cv2.CascadeClassifier('models/haarcascade_frontalface_default.xml')
 
     transformations = Compose([
         ToPILImage(),
