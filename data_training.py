@@ -86,6 +86,6 @@ if __name__ == '__main__':
     model = MaskDetect(Path('mask_df.pickle'))
 
     trainer = pl.Trainer(gpus=1 if torch.cuda.is_available() else 0,
-                      max_epochs=3,
+                      max_epochs=10,
                       profiler=True)
     trainer.fit(model)
