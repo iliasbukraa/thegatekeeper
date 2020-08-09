@@ -3,7 +3,7 @@ from pathlib import Path
 import click
 import cv2
 import torch
-from skvideo.io import FFmpegWriter, vreader
+from skvideo.io import vreader
 from torchvision.transforms import Compose, Resize, ToPILImage, ToTensor
 
 from common.facedetector import FaceDetector
@@ -16,10 +16,9 @@ from data_training import MaskDetect
                     """)
 @click.argument('modelpath')
 @click.argument('videopath')
-@click.option('--output', 'outputPath', type=Path,
-              help='specify output path to save video with annotations')
+
 @torch.no_grad()
-def tagVideo(modelpath, videopath, outputPath=None):
+def tagVideo(modelpath, videopath):
     """ detect if persons in video are wearing masks or not
     """
     model = MaskDetect()
@@ -40,9 +39,6 @@ def tagVideo(modelpath, videopath, outputPath=None):
         ToTensor(),
     ])
 
-    if outputPath:
-        writer = FFmpegWriter(str(outputPath))
-
     font = cv2.FONT_HERSHEY_SIMPLEX
     cv2.namedWindow('main', cv2.WINDOW_NORMAL)
     labels = ['No mask', 'Mask']
@@ -53,38 +49,30 @@ def tagVideo(modelpath, videopath, outputPath=None):
         for face in faces:
             xStart, yStart, width, height = face
 
-            # clamp coordinates that are outside of the image
             xStart, yStart = max(xStart, 0), max(yStart, 0)
 
-            # predict mask label on extracted face
             faceImg = frame[yStart:yStart + height, xStart:xStart + width]
             output = model(transformations(faceImg).unsqueeze(0).to(device))
             _, predicted = torch.max(output.data, 1)
             print(predicted)
 
-            # draw face frame
             cv2.rectangle(frame,
                           (xStart, yStart),
                           (xStart + width, yStart + height),
                           (126, 65, 64),
                           thickness=2)
 
-            # center text according to the face frame
             textSize = cv2.getTextSize(labels[predicted], font, 1, 2)[0]
             textX = xStart + width // 2 - textSize[0] // 2
 
-            # draw prediction label
             cv2.putText(frame,
                         labels[predicted],
                         (textX, yStart - 20),
                         font, 1, labelColor[predicted], 2)
-        if outputPath:
-            writer.writeFrame(cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
         cv2.imshow('main', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-    if outputPath:
-        writer.close()
+
     cv2.destroyAllWindows()
 
 

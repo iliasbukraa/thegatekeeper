@@ -11,7 +11,6 @@ from torch.utils.data import DataLoader
 
 from data_class import MaskClass
 
-
 class MaskDetect(pl.LightningModule):
     def __init__(self, maskPath:Path=None):
         super(MaskDetect, self).__init__()

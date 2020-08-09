@@ -6,16 +6,11 @@ from torchvision.transforms import Compose, Resize, ToPILImage, ToTensor
 from data_training import MaskDetect
 from common.facedetector import FaceDetector
 
-@click.command(help="""
-                    modelPath: path to model.ckpt\n
-                    videoPath: path to video file to annotate
-                    """)
-@click.argument('modelpath')
 @torch.no_grad()
-def tagVideo(modelpath):
+def tagVideo():
 
     model = MaskDetect()
-    model.load_state_dict(torch.load(modelpath)['state_dict'], strict=False)
+    model.load_state_dict(torch.load('models/epoch=8.ckpt')['state_dict'], strict=False)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
