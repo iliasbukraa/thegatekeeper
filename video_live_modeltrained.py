@@ -1,10 +1,14 @@
-import click
 import cv2
 import torch
 from torchvision.transforms import Compose, Resize, ToPILImage, ToTensor
 
 from data_training import MaskDetect
 from common.facedetector import FaceDetector
+
+from flask import Flask, Response
+
+app = Flask(__name__)
+video_capture = cv2.VideoCapture(0)
 
 @torch.no_grad()
 def tagVideo():
@@ -27,7 +31,6 @@ def tagVideo():
         ToTensor(),
     ])
 
-    video_capture = cv2.VideoCapture(0)
     labels = ['No mask', 'Mask']
     labelColor = [(10, 0, 255), (10, 255, 0)]
 
@@ -59,13 +62,13 @@ def tagVideo():
                         (textX, yStart - 20),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, labelColor[predicted], 2)
 
-        cv2.imshow('FaceDetection', frame)
-        c = cv2.waitKey(1)
-        if c == 27:
-            break
+            frame = cv2.imencode('.jpg', frame)[1].tobytes()
+            yield (b'--frame\r\n'b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-    video_capture.release()
-    cv2.destroyAllWindows()
+@app.route('/')
+def video_feed():
+    return Response(tagVideo(),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__ == '__main__':
-    tagVideo()
+    app.run(host='0.0.0.0', port=2204, threaded=True)
