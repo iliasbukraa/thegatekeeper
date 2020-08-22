@@ -1,9 +1,7 @@
-from pathlib import Path
-
 import click
 import cv2
 import torch
-from skvideo.io import vreader
+from skvideo.io import vreader, FFmpegWriter
 from torchvision.transforms import Compose, Resize, ToPILImage, ToTensor
 
 from common.facedetector import FaceDetector
@@ -11,18 +9,18 @@ from data_training import MaskDetect
 
 
 @click.command(help="""
-                    modelPath: path to model.ckpt\n
-                    videoPath: path to video file to annotate
+                    videoPath: path to video file to annotate\n
+                    outputPath: path to save output to
                     """)
-@click.argument('modelpath')
 @click.argument('videopath')
+@click.argument('outputpath')
 
 @torch.no_grad()
-def tagVideo(modelpath, videopath):
+def tagVideo(videopath, outputpath):
     """ detect if persons in video are wearing masks or not
     """
     model = MaskDetect()
-    model.load_state_dict(torch.load(modelpath)['state_dict'], strict=False)
+    model.load_state_dict(torch.load('models/epoch=8.ckpt')['state_dict'], strict=False)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
@@ -39,10 +37,13 @@ def tagVideo(modelpath, videopath):
         ToTensor(),
     ])
 
+    writer = FFmpegWriter(str(outputpath) + '.avi')
+
     font = cv2.FONT_HERSHEY_SIMPLEX
     cv2.namedWindow('main', cv2.WINDOW_NORMAL)
     labels = ['No mask', 'Mask']
     labelColor = [(10, 0, 255), (10, 255, 0)]
+
     for frame in vreader(str(videopath)):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         faces = faceDetector.detect(frame)
@@ -69,14 +70,17 @@ def tagVideo(modelpath, videopath):
                         labels[predicted],
                         (textX, yStart - 20),
                         font, 1, labelColor[predicted], 2)
+
+        writer.writeFrame(cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
+
         cv2.imshow('main', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
+    writer.close()
+
     cv2.destroyAllWindows()
 
-
-# pylint: disable=no-value-for-parameter
 if __name__ == '__main__':
     tagVideo()
 
