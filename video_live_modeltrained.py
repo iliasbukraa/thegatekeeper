@@ -51,8 +51,8 @@ def tagVideo():
             cv2.rectangle(frame,
                           (xStart, yStart),
                           (xStart + width, yStart + height),
-                          (126, 65, 64),
-                          thickness=2)
+                          labelColor[predicted],
+                          thickness=5)
 
             textSize = cv2.getTextSize(labels[predicted], cv2.FONT_HERSHEY_SIMPLEX, 1, 2)[0]
             textX = xStart + width // 2 - textSize[0] // 2

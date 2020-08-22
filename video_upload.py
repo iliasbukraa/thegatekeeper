@@ -60,16 +60,16 @@ def tagVideo(videopath, outputpath):
             cv2.rectangle(frame,
                           (xStart, yStart),
                           (xStart + width, yStart + height),
-                          (126, 65, 64),
-                          thickness=2)
+                          labelColor[predicted],
+                          thickness=5)
 
             textSize = cv2.getTextSize(labels[predicted], font, 1, 2)[0]
-            textX = xStart + width // 2 - textSize[0] // 2
+            textX = xStart + width // 2 - textSize[0]
 
             cv2.putText(frame,
                         labels[predicted],
                         (textX, yStart - 20),
-                        font, 1, labelColor[predicted], 2)
+                        font, 2, labelColor[predicted], 5)
 
         writer.writeFrame(cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
 
