@@ -23,4 +23,4 @@ python data_training.py
 ```
 
 ![Gatekeeper Logo]
-(https://github.com/iliasbukraa/thegatekeeper/blob/master/Gatekeeper%20Logo.png)
+(https://github.com/iliasbukraa/thegatekeeper/blob/master/Gatekeeper%20Logo.png?raw=true)
