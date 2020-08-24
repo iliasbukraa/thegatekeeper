@@ -1,3 +1,10 @@
+'''
+This script defines the model architecture of the mask detection model we aim to create. By using the pytorch libraries
+we created the MaskDetect class which is the model architecture and further more some boilerplate code every Pytorch model
+needs such as the dataloader, optimizer etc. Last step is the the actual training of the model using pytorch. In this case
+the epoch with the best accuracy is saved.
+'''
+
 from pathlib import Path
 
 import pandas as pd
@@ -11,6 +18,7 @@ from torch.utils.data import DataLoader
 
 from data_class import MaskClass
 
+# Define the model architecture and its layers
 class MaskDetect(pl.LightningModule):
     def __init__(self, maskPath:Path=None):
         super(MaskDetect, self).__init__()
@@ -44,11 +52,12 @@ class MaskDetect(pl.LightningModule):
             nn.Linear(in_features=1024, out_features=2),
         )
 
-        for sequential in [self.convolution1, self.convolution2, self.convolution3, self.linear]:
-            for layer in sequential.children():
+        for sequence in [self.convolution1, self.convolution2, self.convolution3, self.linear]:
+            for layer in sequence.children():
                 if isinstance(layer, (nn.Linear, nn.Conv2d)):
                     init.xavier_uniform_(layer.weight)
 
+# define the forward function
     def forward(self, x: Tensor):
         out = self.convolution1(x)
         out = self.convolution2(out)
@@ -57,6 +66,7 @@ class MaskDetect(pl.LightningModule):
         out = self.linear(out)
         return out
 
+# define the function calling the data, the trainloader, the training step and the optimizer in this training step
     def prepare_data(self):
         self.mask_dataframe = pd.read_pickle(self.maskPath)
         self.train_dataframe = MaskClass(self.mask_dataframe)
@@ -81,6 +91,7 @@ class MaskDetect(pl.LightningModule):
 
         return {'loss': loss}
 
+# trains the mask detection model using pytorch lightning
 if __name__ == '__main__':
     model = MaskDetect(Path('mask_df.pickle'))
 

@@ -1,9 +1,13 @@
+'''
+Creation of a class object, in this case MaskClass. What this does is reads out the pandas dataframe and performs transformations
+on every image used to train the mask detection model.
+'''
+
 import cv2
 import numpy as np
 from torch import long, tensor
 from torch.utils.data.dataset import Dataset
 from torchvision.transforms import Compose, Resize, ToPILImage, ToTensor
-
 
 class MaskClass(Dataset):
     def __init__(self, df):

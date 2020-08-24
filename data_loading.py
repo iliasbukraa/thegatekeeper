@@ -1,3 +1,9 @@
+'''
+thsi script is run to create the dataframe containing both the image paths in one column and status (mask/nomask) in the
+second column
+'''
+
+
 from pathlib import Path
 import pandas as pd
 
