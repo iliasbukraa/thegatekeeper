@@ -6,7 +6,7 @@ practices on how to wear a face mask. This is where the gatekeeper comes in.
 
 ## running Gatekeeper
 
-By following the instructions in *requirements.txt* a virtual environment can be created to run the gatekeeper. A pretrained model is available.
+By following the instructions in **requirements.txt** a virtual environment can be created to run the gatekeeper. A pretrained model is available.
 To run the gatekeeper on recorded video, execute following command:
 ```
 python video_upload.py [VIDEOPATH] [OUTPUTPATH]
@@ -22,5 +22,4 @@ If the user wishes to train their own model, do so by executing following comman
 python data_training.py
 ```
 
-![Gatekeeper Logo]
-(Gatekeeper-Logo.png)
+![](Gatekeeper-Logo.png)
