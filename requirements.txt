@@ -17,7 +17,7 @@ chardet=3.0.4=py38_1003
 click=7.1.2=pyh9f0ad1d_0
 cloudpickle=1.5.0=py_0
 cpuonly=1.0=0
-cryptography=2.9.2=py38h1ba5d50_0
+cryptography>=3.2
 cycler=0.10.0=py38_0
 cytoolz=0.10.1=py38h7b6447c_0
 dask-core=2.20.0=py_0
@@ -109,7 +109,7 @@ pandas=1.0.5=py38h0573a6f_0
 pathlib=1.0.1=py_1
 pcre=8.44=he6710b0_0
 perl=5.26.2=h14c3975_0
-pillow=7.2.0=py38hb39fc2d_0
+pillow>=8.1.1
 pip=20.1.1=py38_1
 pixman=0.38.0=h516909a_1003
 protobuf=3.12.3=py38h950e882_0
